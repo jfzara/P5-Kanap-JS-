@@ -15,7 +15,6 @@ const getDataApi = async () => {
         let productCard = document.createElement("div");
         document.querySelector(".items").appendChild(productCard);
         productCard.classList.add("product_card");
-        document.querySelector(".items").style.border = "thick solid #0000FF";
       }
    
   })
