@@ -5,13 +5,12 @@ const getDataApi = async () => {
       const  allProducts = response.json(); 
       console.log(allProducts);
     allProducts.then((response) => {
-    const articles = response;
+   
+      const articles = response;
     
-
     for (let article of articles) {
         
-        console.log(articles[article]) ;
-       
+        /*console.log(articles[article]) ;*/
 
         let productCardAncre = document.createElement("a");
         document.querySelector(".items").appendChild(productCardAncre);
@@ -27,15 +26,15 @@ const getDataApi = async () => {
         </a>
         `;
 
-        };
-
-    })
+    }   
         
+  })
+
     .catch((err) => console.log(err));
     })
-  }
+}
   
     getDataApi();
 
-
+    
     

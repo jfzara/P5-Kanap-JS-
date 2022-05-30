@@ -5,25 +5,18 @@ let id = idFromUrl;/*recuperer le id sans le ? */
 console.log(idFromUrl);
 console.log(id);
 console.log(`This is the id: ${idFromUrl}`);
-let productImage = document.getElementsByTagName("img");
-
-
-let productName =  document.getElementById("title");
-let productPrice= document.getElementById("price");
-let productDescription = document.getElementById("description") ;
-
-let product =[];
-
-
 
 
 const getProduct = async () => {
-    await fetch (`http://localhost:3000/api/products?${idFromUrl}`)
-    .then ((res) => {res.json()})
-    .then ((promise) => { 
-        product = promise;
-    })
+  
+  await function () { 
     
+    localStorage.getItem(``)
+  
+  }
+
+   
+   console.log(); 
   }
 const showProduct = async () => {
   await getProduct()
