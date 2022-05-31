@@ -7,29 +7,48 @@ const getDataApi = async () => {
     allProducts.then((response) => {
    
       const articles = response;
+      
     
-    for (let article of articles) {
-        
-        /*console.log(articles[article]) ;*/
+    for (let i of articles) {
 
         let productCardAncre = document.createElement("a");
         document.querySelector(".items").appendChild(productCardAncre);
         productCardAncre.classList.add(".card_ancre");
         productCardAncre.innerHTML += ` 
-        <a href="./product.html?${article._id}">
+        <a href="./product.html?${i._id}">
           <article>
-                <img src="${article.imageUrl}" alt="${article.altTxt}">
-                <h3 class="productName">${article.name}</h3>
-                <p> ${article.price}€</p>
-                <p class="productDescription">${article.description}</p>
+                <img src="${i.imageUrl}" alt="${i.altTxt}">
+                <h3 class="productName">${i.name}</h3>
+                <p> ${i.price}€</p>
+                <p class="productDescription">${i.description}</p>
           </article>
         </a>
-        `;
+        `; 
 
+  
     }   
-        
-  })
+     
+    for ( let article of articles) {
+  
+      console.log(article);
+      
 
+      let articlesDataForStorage = JSON.stringify(article);
+
+      let storeData = function () {
+        
+    
+         }
+    
+       storeData();
+
+        
+    }
+   
+  
+
+  })
+  
     .catch((err) => console.log(err));
     })
 }

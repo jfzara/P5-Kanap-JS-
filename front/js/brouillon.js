@@ -49,14 +49,25 @@ let chooseColor = document.getElementsByTagName("option");
 
  }
 
- let articlesDataForStorage = JSON.stringify(articlesRawData);
-
- let storeData = function () {
-   localStorage.removeItem("articlesDataForStorage")
-  
- }
+ let articlesRawData = {
+    altTxt: article.altTxt,
+    colors: (allColors.length) [allColors[indexColors]],
+    description: article.description,
+    imageUrl: article.imageUrl,
+    name: article.name,
+    price: article.price,
+    _id: article._id
  
- storeData();
+  }
+
+  let articlesDataForStorage = JSON.stringify(articlesRawData);
+
+  let storeData = function () {
+    localStorage.setItem("articlesDataForStorage", articlesDataForStorage)
+
+}
+
+storeData();
 
 
 
