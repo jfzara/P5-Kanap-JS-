@@ -123,6 +123,7 @@ let Kanap_Card;
 
 if ( localStorage.getItem (Kanap_Card) != null)
 
+
 const getDataApi = async () => {
     await fetch ('http://localhost:3000/api/products')
     .then ((response) => {
