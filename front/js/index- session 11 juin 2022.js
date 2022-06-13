@@ -1,7 +1,7 @@
 //*initialisation de ------*//
 
         
-  const url = 'http://localhost:3000/api/products'  /*création variable Url page produit*/  
+  const url = 'http://localhost:3000/api/products'  //création variable Url page produit 
         
   const queryString = window.location.search;
 
