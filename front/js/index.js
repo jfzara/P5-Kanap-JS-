@@ -1,76 +1,59 @@
 
+//Affichage des cartes
 
-//*initialisation de l'URL Parameters*//
+const getDataApi = async () => {
+  await fetch ('http://localhost:3000/api/products')
 
-const url = 'http://localhost:3000/api/products'  //création variable Url page produit 
+  //Traduire la promesse 1 en json et la stocker dans la variable allProducts
+  .then ((response) => {
+    console.log (response);   
+    const  allProducts = response.json(); 
+    console.log(allProducts);
+  
+    // Stocker la promesse 2 dans la variable 'articles'   
+    allProducts.then((response) => {
+  
+    const articles = response;
 
-const queryString = window.location.search;    
-console.log(queryString);
+  // puis créer chaque carte avec une boucle FOR, en reprenant la structure HTML proposée
+  
+  for (let article in articles) {
+    let productCard = document.createElement("a");//crée chaque carte (carte = ancre/lien vers page Produit)
+        document.querySelector(".items").appendChild(productCard);
+        productCard.href = `product.html?id=${articles[article]._id}`;//prise en compte de l'Id du produit concerné
 
-const urlParams = new URLSearchParams(queryString);
+    let productBaliseArticle = document.createElement("article");//contenu de la carte proprement dite
+        productCard.appendChild(productBaliseArticle);        
 
-const urlProduct = urlParams.get('id');
- 
-console.log(url);
-console.log(urlProduct);
+    let productImage = document.createElement("img");
+        productBaliseArticle.appendChild(productImage);
+        productImage.src = articles[article].imageUrl;//crée l'image de chaque produit
+        productImage.style.width = "160px";
+        productImage.style.height = "160px";
+        productImage.setAttribute("alt",`${articles[article].altTxt}`);
 
+    let productName = document.createElement("h3");
+        productBaliseArticle.appendChild(productName);
+        productName.innerHTML = articles[article].name;//affiche le nom de chaque produit
 
- // Lien avec la page d'accueil et récupération des éléments
-
-getInfoProduct ();
-
-
-async function getInfoProduct () {
-await fetch (url + urlProduct )
-.then ((response) => response.json())
-.then (function(data) {
-  console.log (data)
-
-  // Création de la balise "image" à partir des données récupérées de l'API
-  let img = document.createElement('img');
-  img.src = data.imageUrl;
-  img.alt = data. altTxt;
-  document.getElementsByClassName('item_img')[0].appendChild(img);
-
-  // Création de la balise "title" à partir des données récupérées de l'API
-  let nameProduct = document.getElementById ('title');
-  nameProduct.innerHTML = data.name;
-
-  // Création de la balise "price" à partir des données récupérées de l'API
-  let priceProduct = document.getElementById ('price');
-  priceProduct.innerHTML = data.price;
-
-  // Création de la balise "description" à partir des données récupérées de l'API
-  let descriptionProduct = document.getElementById ('description');
-  descriptionProduct.innerHTML = data.description;
-
-  // Création de la balise "colors" à partir des données récupérées de l'API
-  let colorsProduct = document.getElementById ('colors');
-
-  // Indication du choix de couleurs proposées en option
-  for (let i=0; i < data.colors.length; i++) {
-      let color = document.createElement('option')
-      color.setAttribute ("value", data.colors [i] );
-      color.innerHTML = data.colors [i];
-      colorsProduct.appendChild(color);
-  };
-
-})
-
+    let productDescription = document.createElement("p");//affiche la description du produit
+        productBaliseArticle.appendChild(productDescription);
+        productDescription.innerHTML = articles[article].description; 
+        
+  
+      }
+    
+  })
+      
+  .catch((err) => console.log(err));
+  })//comportement en cas d'échec de la requête
 }
 
+  getDataApi();// exécute la fonction
 
 
-/* vérification du local storage
-
-let Kanap_Card; 
-
-if ( localStorage.getItem (Kanap_Card) != null)
-*/
-
-
-
-
-
-    
-    
+   /* let productPriceInEuros= articles[article].price ;//récupère le prix de chaque produit
+        productPriceInEuros.innerHTML = new Intl.NumberFormat("fr-FR", {
+          style: "currency",
+          currency: "EUR",
+        }).format(productPriceInEuros);    //formate et affiche le prix de chaque produit*/
