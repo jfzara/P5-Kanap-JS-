@@ -1,18 +1,13 @@
-//création variable Url page produit
-const url = `http://localhost:3000/api/products`; 
-console.log(url);
+//Extraction de l'Id de chaque produit
 
 const queryString = window.location.search;  
 console.log(queryString);//affiche une chaîne de caractères sous la forme: "?id=chiffres_de_l'Id"
-
 
 
 const urlParams = new URLSearchParams(queryString);
 console.log(urlParams);
 const productId = urlParams.get('id');//*extraire l'Id du produit à  partir des UrlSearchParams + le stocker dans la variable productId
 console.log(productId);
-
-
    
 console.log(queryString);
 
@@ -21,9 +16,8 @@ console.log(url);
 console.log(productId);
 
 
+
  // Lien avec la page d'accueil et récupération des éléments
-
-
 
 
 async function getInfoProduct () {

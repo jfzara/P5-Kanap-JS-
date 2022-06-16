@@ -1,8 +1,13 @@
 
+
+//Stocker l'url de l'API dans une constante nommée "url"
+const url = 'http://localhost:3000/api/products'
+
+
 //Affichage des cartes
 
 const getDataApi = async () => {
-  await fetch ('http://localhost:3000/api/products')
+  await fetch (url)
 
   //Traduire la promesse 1 en json et la stocker dans la variable allProducts
   .then ((response) => {
