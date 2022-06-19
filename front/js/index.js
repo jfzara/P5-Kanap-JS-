@@ -38,12 +38,14 @@ const getDataApi = async () => {
         productImage.setAttribute("alt",`${articles[article].altTxt}`);
 
     let productName = document.createElement("h3");
-        productBaliseArticle.appendChild(productName);
         productName.innerHTML = articles[article].name;//affiche le nom de chaque produit
+        productBaliseArticle.appendChild(productName);
+        
 
     let productDescription = document.createElement("p");//affiche la description du produit
-        productBaliseArticle.appendChild(productDescription);
         productDescription.innerHTML = articles[article].description; 
+        productBaliseArticle.appendChild(productDescription);
+         
         
   
       }
