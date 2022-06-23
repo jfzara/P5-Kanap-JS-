@@ -56,14 +56,18 @@ await fetch (url + productId )
 })
 }
 
-getInfoProduct ();
+ getInfoProduct ();
+
+
+
 
 // function addNewProduct = Ajout d'article au panier = ajout d'article dans le local Storage;
 
 
-const addToCartBtn = document.getElementById("#add-to-cart");
+const addToCartBtn = document.getElementsByTagName("button");
 const articleQuantity = document.getElementById("#quantity");
 const articleColorSelected = document.getElementsByTagName("option").value;
+
 
 //initialiser une variable (array) pour chaque article ajouté:
 const newProductAdded = {
@@ -72,46 +76,49 @@ const newProductAdded = {
 "quantity": articleQuantity, // (variable initialisée en début de la page product.js)
 } ;
 
+
 //initialiser une variable (tableau)pour recevoir tout nouvel article 
 let productsInCart = [];
 
-//stocker ce tableau  dans le localStorage en le nommant "panier":  
-localStorage.setItem("panier", productsInCart);
 
+//stocker ce tableau  dans le localStorage en le nommant "panier":  
+localStorage.setItem("panier", JSON.stringify(productsInCart));
+
+ function addNewProduct ()  {
+  /*Si le local storage existe
+  Il contient le panier sous forme d'un tableau nommé "panier" ayant pour valeur productsInCart  
+  Récupérer le contenu du panier/local storage et le parser pour le manipuler en js sous
+  forme d'une variable nommée productsSelected */
+  
+   
+
+  if (localStorage.getItem("panier") != null) { 
+
+
+  
+  let productsSelected = JSON.parse(localStorage.getItem("panier"));
+  
+  //ajouter le nouveau produit dans le tableau:
+  productsSelected.push(newProductAdded);
+  //renvoyer le nouveau tableau dans le local storage 
+  localStorage.setItem("panier", JSON.stringify(productsSelected));
+  }
+  
+  //Si le local storage est vide
+  
+  else {
+
+  //ajouter le nouveau produit dans le tableau productsInCart déclaré plus haut:
+  productsInCart.push(newProductAdded);
+  //renvoyer le nouveau tableau dans le local storage 
+  localStorage.setItem("panier", JSON.stringify(productsInCart));
+  
+  }
+}
 
 /* A chaque clic (Event = click) sur le bouton (EventListener = variable (bouton) addToCartBtn),
 exécuter la fonction addNewProduct:*/
 
-addToCartBtn.addEventListener("click", function addNewProduct() {
-
-/*Si le local storage existe
-Il contient le panier sous forme d'un tableau nommé "panier" ayant pour valeur productsInCart  
-Récupérer le contenu du panier/local storage et le parser pour le manipuler en js sous
-forme d'une variable nommée productsSelected */
-
-if (localStorage.getItem("panier") !== null) {
-
-let productsSelected = JSON.parse(localStorage.getItem("panier"));
-
-// Ajouter le nouveau produit dans le tableau et renvoyer le tableau productsSelected dans le local storage
-
-//ajouter le nouveau produit dans le tableau:
-productsSelected.push(newProductAdded);
-//renvoyer le nouveau tableau dans le local storage 
-localStorage.setItem("panier", JSON.stringify(productsSelected));
-}
-
-//Si le local storage est vide
-
-else {
-
-//ajouter le nouveau produit dans le tableau productsInCart déclaré plus haut:
-productsInCart.push(newProductAdded);
-//renvoyer le nouveau tableau dans le local storage 
-localStorage.setItem("panier", JSON.stringify(productsInCart));
-
-}
-
-});
+addToCartBtn.addEventListener("click", (  addNewProduct));
 
 
