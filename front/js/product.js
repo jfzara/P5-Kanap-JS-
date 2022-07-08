@@ -10,9 +10,7 @@ const urlParams = new URLSearchParams(queryString);
 
 const productId = urlParams.get('id');//*extraire l'Id du produit à  partir des UrlSearchParams + le stocker dans la variable productId
 
-
-
-
+let productImage = document.createElement('img');
 
  // Lien avec la page d'accueil et récupération des éléments
 
@@ -23,11 +21,11 @@ await fetch (url + productId )
 .then (function(data) {
   console.log (data)
 
-  // Création de la balise "image" à partir des données récupérées de l'API
-  let img = document.createElement('img');
-  img.src = data.imageUrl;
-  img.alt = data.altTxt;
-  document.getElementsByClassName('item__img')[0].appendChild(img);
+  // Création des propriétés de la balise "image" à partir des données récupérées de l'API
+ 
+  productImage.src = data.imageUrl;
+  productImage.alt = data.altTxt;
+  document.getElementsByClassName('item__img')[0].appendChild(productImage);
 
 
   // Création de la balise "title" à partir des données récupérées de l'API
@@ -48,77 +46,125 @@ await fetch (url + productId )
 
   // Indication du choix de couleurs proposées en option
   for (let i=0; i < data.colors.length; i++) {
-      let color = document.createElement('option')
+      let color = document.createElement('option');
       color.setAttribute ("value", data.colors[i] );
       color.innerHTML = data.colors[i];
       colorsProduct.appendChild(color);
   };
 })
+const addToCartBtn = document.querySelector("#addToCart");
+
+addToCartBtn.addEventListener("click", (addToCart));
+
 }
 
- getInfoProduct ();
+ 
 
+ //Ajouter un produit dans le panier
+ 
+ function addToCart() {
+   /* let produitsChoisis = ;
+    let panier = JSON.stringify(produitsChoisis);
+    localStorage.setItem("panier", panier);*/
+    const selectedColor = document. querySelector("#colors");
+    const numberOfProducts = document.querySelector("#quantity");
 
+    if (numberOfProducts.value > 0 && numberOfProducts.value <=100 && numberOfProducts.value != 0 && selectedColor.value != "") { 
+        
+        if (localStorage.getItem("panier")) {
+            
+            let cartContent = JSON.parse(localStorage.getItem("panier"));
+            console.log(cartContent);
 
+            let idKanap = productId;
+            let colorKanap = selectedColor.value;
+            let qtyKanap = numberOfProducts.value;
 
-// function addNewProduct = Ajout d'article au panier = ajout d'article dans le local Storage;
+            const sameProductFound = cartContent.find(
+                (el) => el.idKanap === productId && el.colorKanap === colorKanap);
+                //Si le produit commandé est déjà dans le panier
+                console.log(sameProductFound);
+               
 
+                if (sameProductFound) {
+                    console.log("cas 2")
+                    console.log("sameProductFound kanap = " + sameProductFound.qtyKanap);
+                    console.log("qtykanap = " + qtyKanap);
+                    let newQuantite = parseInt(qtyKanap) + parseInt(sameProductFound.qtyKanap);
+                    console.log("newQtt est egal a : " + newQuantite);
+                    sameProductFound.qtyKanap = newQuantite;
+                    localStorage.setItem("panier", JSON.stringify(cartContent));
+                    console.log("cartContent egal :");
+                    console.log(cartContent);
+                    console.log("fin cartContent");
+                //Si le produit commandé n'est pas dans le panier
+                } else {
+                    
+                    let cartContent = JSON.parse(localStorage.getItem("panier"));
 
-const addToCartBtn = document.getElementsByTagName("button");
-const articleQuantity = document.getElementById("#quantity");
-const articleColorSelected = document.getElementsByTagName("option").value;
+                    let idKanap = productId;
+                    let nameKanap = document.querySelector("#title").textContent;
+                    let colorKanap = document.querySelector("#colors").value;
+                    let qtyKanap = document.querySelector("#quantity").value;
+                    let imgKanap = productImage.src; 
+                    let altImg = productImage.altTxt;
+                    let priceKanap = document.querySelector("#price").textContent;
+                    
+                    console.log(img);
+                    console.log(idKanap, nameKanap, colorKanap, qtyKanap, imgKanap, altImg, priceKanap);
+                
+                    let newProductAdded = {
+                        idKanap : productId,
+                        nameKanap : nameKanap,
+                        colorKanap : colorKanap,
+                        qtyKanap  : qtyKanap,
+                        imgKanap : imgKanap,
+                        altImg : altImg,
+                        priceKanap : priceKanap
+                    };
+                
+                    cartContent.push(newProductAdded);
+                
+                    let nouveauPanier = JSON.stringify(cartContent);
+                    localStorage.setItem("nouveau_panier", nouveauPanier);
+                
+                    alert("Ajouté au panier !");
+                }
 
+        } else {
+            console.log("cas 3");
+            let cartContent = [];
 
-//initialiser une variable (array) pour chaque article ajouté:
-const newProductAdded = {
-"id": productId,   //l'Id est extrait a partir des UrlSearchParams (variable initialisée en début de la page product.js) 
-"color": articleColorSelected,// (variable initialisée en début de la page product.js)
-"quantity": articleQuantity, // (variable initialisée en début de la page product.js)
-} ;
-
-
-//initialiser une variable (tableau)pour recevoir tout nouvel article 
-let productsInCart = [];
-
-
-//stocker ce tableau  dans le localStorage en le nommant "panier":  
-localStorage.setItem("panier", JSON.stringify(productsInCart));
-
- function addNewProduct ()  {
-  /*Si le local storage existe
-  Il contient le panier sous forme d'un tableau nommé "panier" ayant pour valeur productsInCart  
-  Récupérer le contenu du panier/local storage et le parser pour le manipuler en js sous
-  forme d'une variable nommée productsSelected */
-  
-   
-
-  if (localStorage.getItem("panier") != null) { 
-
-
-  
-  let productsSelected = JSON.parse(localStorage.getItem("panier"));
-  
-  //ajouter le nouveau produit dans le tableau:
-  productsSelected.push(newProductAdded);
-  //renvoyer le nouveau tableau dans le local storage 
-  localStorage.setItem("panier", JSON.stringify(productsSelected));
-  }
-  
-  //Si le local storage est vide
-  
-  else {
-
-  //ajouter le nouveau produit dans le tableau productsInCart déclaré plus haut:
-  productsInCart.push(newProductAdded);
-  //renvoyer le nouveau tableau dans le local storage 
-  localStorage.setItem("panier", JSON.stringify(productsInCart));
-  
-  }
+            let idKanap = productId;
+            let nameKanap = document.querySelector("#title").textContent;
+            let colorKanap = document.querySelector("#colors").value;
+            let qtyKanap = document.querySelector("#quantity").value;
+            let imgKanap = productImage.src; 
+            let altImg = productImage.alt;
+            let priceKanap = document.querySelector("#price").textContent;
+            
+            console.log(productImage);
+            console.log(idKanap, nameKanap, colorKanap, qtyKanap, imgKanap, altImg, priceKanap);
+        
+            let firstProduct = {
+                idKanap : productId,
+                nameKanap : nameKanap,
+                colorKanap : colorKanap,
+                qtyKanap  : qtyKanap,
+                imgKanap : imgKanap,
+                altImg : altImg,
+                priceKanap : priceKanap
+            };
+        
+            cartContent.push(firstProduct);
+        
+            let cartWithFirstProduct = JSON.stringify(cartContent);
+            console.log(cartWithFirstProduct);
+            localStorage.setItem("cartWithFirstProduct", cartWithFirstProduct);
+        
+            alert("Ajouté au panier !");    
+        }
+    }
 }
 
-/* A chaque clic (Event = click) sur le bouton (EventListener = variable (bouton) addToCartBtn),
-exécuter la fonction addNewProduct:*/
-
-addToCartBtn.addEventListener("click", (  addNewProduct));
-
-
+getInfoProduct ();
