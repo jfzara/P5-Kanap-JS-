@@ -10,7 +10,7 @@ const urlParams = new URLSearchParams(queryString);
 
 const productId = urlParams.get('id');//*extraire l'Id du produit à  partir des UrlSearchParams + le stocker dans la variable productId
 
-let productImage = document.createElement('img');
+
 
  // Lien avec la page d'accueil et récupération des éléments
 
@@ -22,7 +22,7 @@ await fetch (url + productId )
   console.log (data)
 
   // Création des propriétés de la balise "image" à partir des données récupérées de l'API
- 
+  let productImage = document.createElement('img');
   productImage.src = data.imageUrl;
   productImage.alt = data.altTxt;
   document.getElementsByClassName('item__img')[0].appendChild(productImage);
@@ -52,31 +52,56 @@ await fetch (url + productId )
       colorsProduct.appendChild(color);
   };
 })
-const addToCartBtn = document.querySelector("#addToCart");
 
-addToCartBtn.addEventListener("click", (addToCart));
 
 }
 
- 
+const addToCartBtn = document.querySelector("#addToCart");
+
+addToCartBtn.addEventListener("click", (addToCart)); 
 
  //Ajouter un produit dans le panier
  
  function addToCart() {
-   //Déclarer les variables de la couleur et de la quantité des canapés choisi
-    const selectedColor = document. querySelector("#colors");
-    const numberOfProducts = document.querySelector("#quantity");
+   
+   
+    let panier;
+    if (localStorage.getItem("panier") !=null) {
+        panier = JSON.parse(localStorage.getItem("panier"));
+    } else {
+        panier = [];
+    }
+   
+    fetch (url + productId ) 
+    .then ((response) => response.json())
+    .then (function(data) {
+
+        const productImage= data.imageUrl ;
+        const productAlt = data.altTxt;
+        const productPrice = data.price ;
+        const productName = data.name ;
+        const selectedColor = document. querySelector("#colors");
+        const numberOfProducts = document.querySelector("#quantity");
+
+
 
     if (numberOfProducts.value > 0 && numberOfProducts.value <=100 && numberOfProducts.value != 0 && selectedColor.value != "") { 
         
-        if (localStorage.getItem("panier")) {
+            let qtyKanap = numberOfProducts.value;
             
+
             let cartContent = JSON.parse(localStorage.getItem("panier"));
             console.log(cartContent);
 
             let idKanap = productId;
             let colorKanap = selectedColor.value;
-            let qtyKanap = numberOfProducts.value;
+            let productKanap = {
+                "idOfProduct": idKanap,
+                "colorOfProduct": colorKanap,
+                "quantityOfProduct": numberOfProducts,
+                "priceOfProduct": productPrice,
+                "nameOfProduct" : productName
+            }
 
             const sameProductFound = cartContent.find(
                 (el) => el.idKanap === productId && el.colorKanap === colorKanap);
@@ -85,17 +110,17 @@ addToCartBtn.addEventListener("click", (addToCart));
                
 
                 if (sameProductFound) {
-                    console.log("cas 1");
+                    /*console.log("cas 1");
                     console.log("sameProductFound kanap = " + sameProductFound.qtyKanap);
-                    console.log("qtykanap = " + qtyKanap);
+                    console.log("qtykanap = " + qtyKanap);*/
                     let newQuantite = parseInt(qtyKanap) + parseInt(sameProductFound.qtyKanap);
-                    console.log("newQtt est egal a : " + newQuantite);
+                    //console.log("newQtt est egal a : " + newQuantite);
                     sameProductFound.qtyKanap = newQuantite;
                     localStorage.setItem("panier", JSON.stringify(cartContent));
-                    console.log("cartContent egal :");
+                    /*console.log("cartContent egal :");
                     console.log(cartContent);
-                    console.log("fin cartContent");
-                //Si le produit commandé n'est pas dans le panier
+                    console.log("fin cartContent");*/
+                
                 } else {
                     console.log("cas 2");
                     let cartContent = JSON.parse(localStorage.getItem("panier"));
@@ -162,7 +187,8 @@ addToCartBtn.addEventListener("click", (addToCart));
         
             alert("Ajouté au panier !");    
         }
-    }
+    });
+    
 }
 
 getInfoProduct ();

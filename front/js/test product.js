@@ -67,9 +67,12 @@ addToCartBtn.addEventListener("click", (addToCart));
     const selectedColor = document. querySelector("#colors");
     const numberOfProducts = document.querySelector("#quantity");
 
+//si l'utilisateur a choisi au moins un produit et au aussi choisi la couleur....
     if (numberOfProducts.value > 0 && numberOfProducts.value <=100 && numberOfProducts.value != 0 && selectedColor.value != "") { 
-        
+     
+        //...et si le local Storage contient déja des produits choisis par l'utilisateur 
         if (localStorage.getItem("panier")) {
+           
             
             let cartContent = JSON.parse(localStorage.getItem("panier"));
             console.log(cartContent);
@@ -80,10 +83,10 @@ addToCartBtn.addEventListener("click", (addToCart));
 
             const sameProductFound = cartContent.find(
                 (el) => el.idKanap === productId && el.colorKanap === colorKanap);
-                //Si le produit commandé est déjà dans le panier
+                
                 console.log(sameProductFound);
                
-
+        //
                 if (sameProductFound) {
                     console.log("cas 1");
                     console.log("sameProductFound kanap = " + sameProductFound.qtyKanap);

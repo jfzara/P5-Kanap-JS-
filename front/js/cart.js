@@ -62,7 +62,7 @@ function getTotals(){
         totalQtt += elemsQtt[i].valueAsNumber;
     }
     
-    let productTotalQuantity = document.getElementById('totalQuantity');
+    let productTotalQuantity = document.getElementById('#totalQuantity');
     productTotalQuantity.innerHTML = totalQtt;
 
     // Récupération du prix total
@@ -71,7 +71,7 @@ function getTotals(){
         totalPrice += (elemsQtt[i].valueAsNumber * cartContent[i].priceKanap);
     }
 
-    let productTotalPrice = document.getElementById('totalPrice');
+    let productTotalPrice = document.getElementById('#totalPrice');
     productTotalPrice.innerHTML = totalPrice;
 }
 getTotals();
@@ -196,17 +196,17 @@ function getForm() {
 getForm();
 
 function postForm() {
-    const order = document.getElementById('order');
+    const order = document.getElementById('#order');
     order.addEventListener('click', (event) => {
     event.preventDefault();
   
     // je récupère les données du formulaire dans un objet
     const contact = {
-      firstName : document.getElementById('firstName').value,
-      lastName : document.getElementById('lastName').value,
-      address : document.getElementById('address').value,
-      city : document.getElementById('city').value,
-      email : document.getElementById('email').value
+      firstName : document.getElementById('#firstName').value,
+      lastName : document.getElementById('#lastName').value,
+      address : document.getElementById('#address').value,
+      city : document.getElementById('#city').value,
+      email : document.getElementById('#email').value
     }
 
     //Construction d'un array d'id depuis le local storage
@@ -282,7 +282,7 @@ function getProductLocal() {
         let productImgAlt = data.altTxt;
 
         //Lien avec la balise "Votre panier"
-        let lienArticleCart = document.getElementById('cart__items');
+        let lienArticleCart = document.getElementById('#cart__items');
 
         //Création de l'article dans le HTML et lien avec la balise "cart__items"
         let articleCart = document.createElement("article");
@@ -407,14 +407,14 @@ function totalQuantity () {
     for (i = 0; i < quantityItem.length; i++) {
         number += parseInt(quantityItem[i].value);
     }
-    totalNumber = document.getElementById('totalQuantity');
+    totalNumber = document.getElementById('#totalQuantity');
     totalNumber.innerHTML = number;
 };
 
 
  // Fonction pour avoir le prix total 
 async function totalPrice () {
-    let quantityItem = document.getElementsByClassName('itemQuantity');
+    let quantityItem = document.getElementsByClassName('#itemQuantity');
     let total = 0;
 
     for (e= 0; e < kanap_Cart.length; e++) {
@@ -425,7 +425,7 @@ async function totalPrice () {
         })
         total += itemPrice * parseInt(quantityItem[e].value);
     };
-    totalPriceProduct = document.getElementById('totalPrice');
+    totalPriceProduct = document.getElementById('#totalPrice');
     totalPriceProduct.innerHTML = total;
 }
 totalPrice();
@@ -448,7 +448,7 @@ function setForm () {
     });
     const validFirstName = function(firstName) {
         let testFirstName = generalRegex.test(firstName.value);
-        let errorMessageFirstName = document.getElementById('firstNameErrorMsg');
+        let errorMessageFirstName = document.getElementById('#firstNameErrorMsg');
 
         if (testFirstName) {
             errorMessageFirstName.innerHTML = 'Prénom valide';
@@ -463,7 +463,7 @@ function setForm () {
     });
     const validLastName = function(lastName) {
         let testLastName = generalRegex.test(lastName.value);
-        let errorMessageLastName = document.getElementById('lastNameErrorMsg');
+        let errorMessageLastName = document.getElementById('#lastNameErrorMsg');
 
         if (testLastName) {
             errorMessageLastName.innerHTML = 'Nom valide';
@@ -478,7 +478,7 @@ function setForm () {
     });
     const validAdress = function(address) {
         let testAdress = adressRegex.test(address.value);
-        let errorMessageAdress = document.getElementById('addressErrorMsg');
+        let errorMessageAdress = document.getElementById('#addressErrorMsg');
 
         if (testAdress) {
             errorMessageAdress.innerHTML = 'Adresse valide';
@@ -493,7 +493,7 @@ function setForm () {
     });
     const validCity = function(city) {
         let testCity = generalRegex.test(city.value);
-        let errorMessageCity = document.getElementById('cityErrorMsg');
+        let errorMessageCity = document.getElementById('#cityErrorMsg');
 
         if (testCity) {
             errorMessageCity.innerHTML = 'Ville valide';
@@ -508,7 +508,7 @@ function setForm () {
     });
     const validEmail = function(email) {
         let testEmail = emailRegex.test(email.value);
-        let errorMessageEmail = document.getElementById('emailErrorMsg');
+        let errorMessageEmail = document.getElementById('#emailErrorMsg');
 
         if (testEmail) {
             errorMessageEmail.innerHTML = 'Adresse email valide';
@@ -527,11 +527,11 @@ async function submitOrder (){
 
     //Mise en place d'un objet pour les infos du formulaire
     const infoContact = {
-        firstName : document.getElementById('firstName').value,
-        lastName : document.getElementById('lastName').value,
-        address : document.getElementById('address').value,
-        city : document.getElementById('city').value,
-        email : document.getElementById('email').value,
+        firstName : document.getElementById('#firstName').value,
+        lastName : document.getElementById('#lastName').value,
+        address : document.getElementById('#address').value,
+        city : document.getElementById('#city').value,
+        email : document.getElementById('#email').value,
     };
 
     //Création d'un array pour les éléments du local storage
