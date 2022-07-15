@@ -56,11 +56,5 @@ const getDataApi = async () => {
   })//comportement en cas d'échec de la requête
 }
 
-  getDataApi();// exécute la fonction
+  getDataApi();// on appelle la fonction
 
-
-   /* let productPriceInEuros= articles[article].price ;//récupère le prix de chaque produit
-        productPriceInEuros.innerHTML = new Intl.NumberFormat("fr-FR", {
-          style: "currency",
-          currency: "EUR",
-        }).format(productPriceInEuros);    //formate et affiche le prix de chaque produit*/
