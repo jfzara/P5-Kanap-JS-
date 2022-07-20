@@ -59,7 +59,8 @@ await fetch (url + productId )
       colorsProduct.appendChild(color);
   };
 })
-  localStorage.removeItem("kanap_Cart");
+
+
 // On appelle la fonction addToCart avec un addEventListener sur le bouton (addToCartBtn), qui réagit au clic 
     const addToCartBtn = document.querySelector("#addToCart");
     addToCartBtn.addEventListener("click", (addToCart));
@@ -67,46 +68,78 @@ await fetch (url + productId )
 
  getInfoProduct ();
 
-
-
+/*function removeStorage (){localStorage.removeItem("panier_localStorage");}
+removeStorage ();*/
 
  function addToCart() {
+    
+    // déclarer la variable pour le nom du produit
+    const nameOfProduct = document.getElementById("title").innerHTML;
     // déclarer la variable pour la quantité de produits
     const numberOfProducts = document.querySelector("#quantity");
     // déclarer la variable pour la couleur de produit sélectionnée
     const selectedColor = document.querySelector("#colors");
+    const selectedProduct = {
+        id: productId,
+        title:nameOfProduct,
+        color:selectedColor.value,
+        quantity: numberOfProducts.value
+    }//déclarer un objet pour désigner chaque produit sélectionné 
 
 //`"soit une variable kanap_Car: elle désigne le contenu du panier (ds le localStorage)"
     let kanap_Cart;
 
 // déclarer la condition 
     
-    if (/*condotion générale : si le clic ajoute une quantité de produits comprise entre 0 et 100 , non nulle 
+    if (/*condition générale : si le clic ajoute une quantité de produits comprise entre 0 et 100, non nulle, 
     et que l'utilisateur a bien sélectionné une couleur*/
     numberOfProducts.value > 0 && numberOfProducts.value <=100 && numberOfProducts.value != 0 && selectedColor.value != ""
     )
    
     {
-    //"cas 1 : si le localStorage contient déja quelque chose"
-        if (localStorage.getItem("kanap_Cart") != null) {
+    
+        //"cas 1 : si le localStorage contient déja quelque chose"
+      
+    if (JSON.parse(localStorage.getItem("panier_localStorage") != null)) 
+    
+    {
+            console.log ("cas 1");
             console.log("produit(s) supplémentaire(s) ajouté(s)!");
+
+
         //"alors on déclare une variable désignant le contenu du panier ds le localStorage"
-        let panier = JSON.parse(localStorage.getItem("kanap_Cart"));
-        console.log(panier);
-        alert("Ajout supplémentaire dans votre panier!");
+       
+        let panier = JSON.parse(localStorage.getItem("panier_localStorage"));
+        console.log(title.innerHTML);
+        console.log(panier.name);
+        console.log(selectedColor.value);
+        console.log(panier.color);
+        let exist = false;
+        panier.forEach((element) => {  
+            
+            if(element.name === title.innerHTML && element.color === selectedColor.value) {
+                element.quantity = parseInt(numberOfProducts.value) + parseInt(element.quantity);
+                exist = true;
+            } 
+            if (exist == false) { panier.push(selectedProduct);    
+            };
+        });
+     
     } else {
         //"cas 2: sinon la variable kanap_Cart désignera un tableau vide destiné à recevoir le premier ajout de produit(s)"
-        console.log("premier ajout de produit(s)!")
+        console.log("cas 2");
         kanap_Cart = [];
-        localStorage.setItem("kanap_Cart", []);//placer ce tableau vide ds le localStorage
-        //- récupérer ce tableau vide pour y introduire le premier ajout de produit(s)
-        let panier = JSON.parse(localStorage.getItem("kanap_Cart"));
+        kanap_Cart.push(selectedProduct);        
+        let panier = JSON.stringify(kanap_Cart);
         console.log(panier);
+        localStorage.setItem("panier_localStorage", panier);//placer le tableau (traduit en JSON) ds le localStorage */
         alert("Ajouté au panier!");
         //-placer le premier ajout de produit(s) sélectionné dans le tableau
 
-    };
-}
+         };
+    } else {
+alert("Sélectionnez un nombre de canapés (entre 0 et 100) et choisissez une couleur");
+};
        
         
 }
