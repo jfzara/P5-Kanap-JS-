@@ -64,15 +64,18 @@ await fetch (url + productId )
 // On appelle la fonction addToCart avec un addEventListener sur le bouton (addToCartBtn), qui réagit au clic 
     const addToCartBtn = document.querySelector("#addToCart");
     addToCartBtn.addEventListener("click", (addToCart));
+    //addToCartBtn.addEventListener("click", (removeStorage));
 }
 
  getInfoProduct ();
 
-/*function removeStorage (){localStorage.removeItem("panier_localStorage");}
-removeStorage ();*/
+//function removeStorage (){localStorage.removeItem("panier_localStorage");
+    
+
 
  function addToCart() {
-    
+     
+
     // déclarer la variable pour le nom du produit
     const nameOfProduct = document.getElementById("title").innerHTML;
     // déclarer la variable pour la quantité de produits
@@ -96,36 +99,33 @@ removeStorage ();*/
     numberOfProducts.value > 0 && numberOfProducts.value <=100 && numberOfProducts.value != 0 && selectedColor.value != ""
     )
    
-    {
-    
-        //"cas 1 : si le localStorage contient déja quelque chose"
+        {   //"cas 1 : si le localStorage contient déja quelque chose"
       
-    if (JSON.parse(localStorage.getItem("panier_localStorage") != null)) 
+        if (JSON.parse(localStorage.getItem("panier_localStorage") != null)) 
     
-    {
-            console.log ("cas 1");
-            console.log("produit(s) supplémentaire(s) ajouté(s)!");
-
-
+            {
+                 console.log ("cas 1");
+                 console.log("produit(s) supplémentaire(s) ajouté(s)!");
         //"alors on déclare une variable désignant le contenu du panier ds le localStorage"
        
-        let panier = JSON.parse(localStorage.getItem("panier_localStorage"));
-        console.log(title.innerHTML);
-        console.log(panier.name);
-        console.log(selectedColor.value);
-        console.log(panier.color);
-        let exist = false;
-        panier.forEach((element) => {  
-            
-            if(element.name === title.innerHTML && element.color === selectedColor.value) {
-                element.quantity = parseInt(numberOfProducts.value) + parseInt(element.quantity);
-                exist = true;
+                     let panier = JSON.parse(localStorage.getItem("panier_localStorage"));
+                      
+                     let exist = false;
+
+                      panier.forEach ((element) => {
+                             if(element.title === nameOfProduct && element.color === selectedColor.value) {
+                                 console.log("presence de produit identique");
+                                 element.quantity = parseInt(numberOfProducts.value) + parseInt(element.quantity);
+                                  exist = true;
+                                 }   
+                                 });
+
+                     if (exist == false) { 
+                     panier.push(selectedProduct);};
+                     alert("Ajouté au panier aussi!");
+                     localStorage.setItem("panier_localStorage", JSON.stringify(panier));
             } 
-            if (exist == false) { panier.push(selectedProduct);    
-            };
-        });
-     
-    } else {
+    else {
         //"cas 2: sinon la variable kanap_Cart désignera un tableau vide destiné à recevoir le premier ajout de produit(s)"
         console.log("cas 2");
         kanap_Cart = [];
@@ -134,8 +134,6 @@ removeStorage ();*/
         console.log(panier);
         localStorage.setItem("panier_localStorage", panier);//placer le tableau (traduit en JSON) ds le localStorage */
         alert("Ajouté au panier!");
-        //-placer le premier ajout de produit(s) sélectionné dans le tableau
-
          };
     } else {
 alert("Sélectionnez un nombre de canapés (entre 0 et 100) et choisissez une couleur");
