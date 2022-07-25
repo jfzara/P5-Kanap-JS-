@@ -64,12 +64,12 @@ await fetch (url + productId )
 // On appelle la fonction addToCart avec un addEventListener sur le bouton (addToCartBtn), qui réagit au clic 
     const addToCartBtn = document.querySelector("#addToCart");
     addToCartBtn.addEventListener("click", (addToCart));
-    //addToCartBtn.addEventListener("click", (removeStorage));
+  //addToCartBtn.addEventListener("click", (removeStorage));
 }
 
  getInfoProduct ();
 
-//function removeStorage (){localStorage.removeItem("panier_localStorage");
+//function removeStorage (){localStorage.removeItem("panier_localStorage")};
     
 
 
