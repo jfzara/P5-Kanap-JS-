@@ -1,12 +1,6 @@
 const url = "http://localhost:3000/api/products/";
 
-// Initialisation de l'URL Parameters
-const queryString = window.location.search;
 
-const urlParams = new URLSearchParams(queryString);
-
-const productId = urlParams.get('id');
-console.log(productId);
 let cartContent = localStorage.getItem("panier_localStorage");
 
 //Vérification du localstorage
@@ -17,18 +11,19 @@ if (localStorage.getItem("panier_localStorage") != null) {
     console.log(panier);
 } else {
     panier = [];
+    alert("Votre panier est vide!");
 };
 
 //Récupération du local storage
-getCartContent();
+displayLocalStorage();
 
-function getCartContent() {
+function displayLocalStorage() {
     for (let i = 0; i < panier.length; i++) {
         fetch(url + panier[i].id)
             .then((resp) => resp.json())
             .then(function (data) {
 
-                //Récupération des données d'un produit
+                //On stocke les propriétés de produit dans des variables pour les afficher 
                 let productName = data.name;
                 let productPrice = data.price;
                 let productImg = data.imageUrl;
@@ -38,10 +33,10 @@ function getCartContent() {
                 const sectionContainerCart = document.getElementById("cart__items");
                 let sectionCart = document.createElement("section");
                 // On crée l'article 
-                let articleCart = document.createElement("article"); 
+                let articleCart = document.createElement("article");
                 articleCart.style.border = "2px solid black";
                 articleCart.className = "cart__item";
-                //Définition des attributs "data-id" et "data-color" avec les éléments du localstorage
+                //On crée les attributs "data-id" et "data-color" avec les éléments du localstorage
                 articleCart.setAttribute('data-id', panier[i].id);
                 articleCart.setAttribute('data-color', panier[i].color);
                 sectionContainerCart.appendChild(articleCart);
@@ -78,11 +73,11 @@ function getCartContent() {
                 couleurProduit.innerHTML = panier[i].color;
                 contentDescription.appendChild(couleurProduit);
 
-              
+
                 //Création du p contenant le prix du produit et lien avec la div description
                 let priceProduit = document.createElement("p");
                 priceProduit.innerHTML = productPrice + ' ' + "€";
-                contentDescription.appendChild(priceProduit);       
+                contentDescription.appendChild(priceProduit);
 
 
                 //Création de la div des paramètres et lien avec la div parent
@@ -95,7 +90,7 @@ function getCartContent() {
                 contentSettingsQuantity.className = "cart__item__content__settings__quantity";
                 contentSettings.appendChild(contentSettingsQuantity);
 
-                
+
                 //Création du p contenant la quantité de produit et lien avec la div quantité
                 let quantityText = document.createElement("p");
                 quantityText.innerHTML = "Qté :";
@@ -109,89 +104,92 @@ function getCartContent() {
                 quantityInput.name = "itemQuantity";
                 quantityInput.min = "1";
                 quantityInput.max = "100";
-                quantityInput.value = panier[i].quantityKanap; 
+                quantityInput.value = panier[i].quantity;
                 contentSettingsQuantity.appendChild(quantityInput);
 
-//Création d'un eventListener pour changement de la quantité dans la page panier
-quantityInput.addEventListener('change', modifyQuantity);
-function modifyQuantity (e){
-    console.log(e);
-    let valueNewQuantity= (e.path[0].value);
-    if (valueNewQuantity != panier[i].quantityKanap && valueNewQuantity <=100 && valueNewQuantity > 0){
-        panier[i].quantityKanap = valueNewQuantity;
-        localStorage.setItem("panier_localStorage", JSON.stringify(panier));
-        totalQuantity();
-        totalPrice();
-    } else {
-        alert(`Vous ne pouvez commander qu'un nombre d'article compris entre 1 et 100`);
-        quantityInput.value = 100;
-    }
-}
 
-//Création de la div "Supprimer" et lien avec la div des paramètres
-let contentSettingsDelete = document.createElement("div");
-contentSettingsDelete.className = "cart__item__content__settings__delete";
-contentSettings.appendChild(contentSettingsDelete);
-//Création du p pour le "Supprimer" et lien avec la div parent
-let deleteItem = document.createElement("p");
-deleteItem.className = "deleteItem";
-deleteItem.innerHTML = "Supprimer";
-contentSettingsDelete.appendChild(deleteItem);
+                quantityInput.addEventListener('click', modifyQuantity);//"change" fonctionne aussi
+                function modifyQuantity(e) {
+                    console.log(e);
+                    let valueNewQuantity = (e.path[0].value);//propriétés de l'event
+                    if (valueNewQuantity != panier[i].quantity && valueNewQuantity <= 100 && valueNewQuantity > 0) {
+                        panier[i].quantity = valueNewQuantity;
+                        localStorage.setItem("panier_localStorage", JSON.stringify(panier));
+                        totalQuantity();
+                        totalPrice();
+                    } else {
+                        alert(`Vous ne pouvez commander qu'un nombre d'articles compris entre 1 et 100`);
+                        quantityInput.value == 100;
+                    }
+                }
+                //-----------------------------------Supprimer un article-----------------------------------------------------------------
 
-//Fonction pour le bouton supprimer
-deleteItem.addEventListener('click', deleteItemFromCart);
-function deleteItemFromCart () {
-    let idProduitDelete = panier[i].idKanap;
-    let colorProduitDelete = panier[i].color;
-    panier = panier.filter( a => a.idKanap !== idProduitDelete && a.color !== colorProduitDelete);
-    localStorage.setItem("panier_localStorage", JSON.stringify(panier));
+                //Créer la div 
+                let contentSettingsDelete = document.createElement("div");
+                contentSettingsDelete.className = "cart__item__content__settings__delete";
+                contentSettings.appendChild(contentSettingsDelete);
 
-    if (panier.length === 0) {
-        localStorage.clear();
-    }
-    window.location.reload();
-}
+                //Créer le bouton "Supprimer"
+                let deleteItem = document.createElement("p");
+                deleteItem.className = "deleteItem";
+                deleteItem.innerHTML = "Supprimer";
+                contentSettingsDelete.appendChild(deleteItem);
 
-totalQuantity();
+                //Ajouter un Event Listener sur le bouton et lui appliquer la fonction "Supprimer(deleteFromCart)"
+                deleteItem.addEventListener('click', deleteFromCart);
+                function deleteFromCart() {
+                    console.log(panier);
+                    let idDuProduitASupprimer = panier[i].id;
+                    let couleurDuProduitASupprimer = panier[i].color;
+                    //rechercher le produit selectionné dans le LS
+                    let produitASplicer = panier.find(
+                        (element) => element.id === idDuProduitASupprimer && element.color === couleurDuProduitASupprimer);
+                    //retirer le produit trouvé du tableau
+                    panier.splice((produitASplicer[i] - 1), 1); //
 
-
+                    localStorage.setItem("panier_localStorage", JSON.stringify(panier));
 
 
+                    if (panier.length === 0) {
+                        localStorage.clear();
+                    }
+                    window.location.reload();
+                }
 
-        /*
-                
-         */
+                totalQuantity();
+
             });
     };
 
 };
 
 //Fonction pour avoir le nombre total de produits
-function totalQuantity () {
+function totalQuantity() {
     let quantityItem = document.getElementsByClassName('itemQuantity');
     let number = 0;
     //console.log(quantityItem);
     for (i = 0; i < quantityItem.length; i++) {
-    number += parseInt(quantityItem[i].value);
+        number += parseInt(quantityItem[i].value);
     }
     totalNumber = document.getElementById('totalQuantity');
     totalNumber.innerHTML = number;
-    };
+};
 
- // Fonction pour avoir le prix total 
-async function totalPrice () {
-    let quantityItem = document.getElementsByClassName('itemQuantity');
+
+// Fonction pour avoir le prix total 
+async function totalPrice() {
+    let itemQuantity = document.getElementsByClassName('itemQuantity');
     let total = 0;
-    
-    for (e= 0; e < panier.length; e++) {
-    let itemPrice = await fetch (url + panier[e].id)
-    .then((resp) => resp.json())
-    .then(function(data) {
-        return data.price
-    })
-    total += itemPrice * parseInt(quantityItem[e].value);
+
+    for (e = 0; e < panier.length; e++) {
+        let itemPrice = await fetch(url + panier[e].id)
+            .then((resp) => resp.json())
+            .then(function (data) {
+                return data.price
+            })
+        total += itemPrice * parseInt(itemQuantity[e].value);
     };
     totalPriceProduct = document.getElementById('totalPrice');
     totalPriceProduct.innerHTML = total;
-    }
-    totalPrice();   
+}
+totalPrice();   
