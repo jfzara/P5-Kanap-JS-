@@ -192,4 +192,155 @@ async function totalPrice() {
     totalPriceProduct = document.getElementById('totalPrice');
     totalPriceProduct.innerHTML = total;
 }
-totalPrice();   
+totalPrice();
+
+
+//Fonction getForm = 
+function getForm() {
+
+
+    // Variable désignant le formulaire
+    let form = document.querySelector(".cart__order__form");
+
+    //Regex pour tester email, prénom-nom-ville et adresse
+
+    let emailRegex = new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9.-]+[.]{1}[a-z]{2,4}$');
+    let generalRegex = new RegExp('^[a-zA-Z. àäéèêëîìïôòöûüùç_-]+$');
+    let adressRegex = new RegExp('^[0-9]{0,5} [a-zA-Z.-_ àäéèêëîìïôòöûüùç]+$')
+
+    //Vérification des éléments sur le formulaire
+
+    //Prénom
+    form.firstName.addEventListener('change', function () {
+        validFirstName(this);
+    });
+    const validFirstName = function (firstName) {
+        let testFirstName = generalRegex.test(firstName.value);
+        let errorMessageFirstName = document.getElementById('firstNameErrorMsg');
+
+        if (testFirstName) {
+            errorMessageFirstName.innerHTML = 'Votre prénom ';
+        } else {
+            errorMessageFirstName.innerHTML = 'Prénom invalide!';
+        }
+    };
+
+    //Nom
+    form.lastName.addEventListener('change', function () {
+        validLastName(this);
+    });
+    const validLastName = function (lastName) {
+        let testLastName = generalRegex.test(lastName.value);
+        let errorMessageLastName = document.getElementById('lastNameErrorMsg');
+
+        if (testLastName) {
+            errorMessageLastName.innerHTML = 'Votre nom';
+        } else {
+            errorMessageLastName.innerHTML = 'Nom invalide!';
+        }
+    };
+
+    //Adresse
+    form.address.addEventListener('change', function () {
+        validAdress(this);
+    });
+    const validAdress = function (address) {
+        let testAdress = adressRegex.test(address.value);
+        let errorMessageAdress = document.getElementById('addressErrorMsg');
+
+        if (testAdress) {
+            errorMessageAdress.innerHTML = 'Votre adresse';
+        } else {
+            errorMessageAdress.innerHTML = 'Adresse invalide!';
+        }
+    };
+
+    //Ville
+    form.city.addEventListener('change', function () {
+        validCity(this);
+    });
+    const validCity = function (city) {
+        let testCity = generalRegex.test(city.value);
+        let errorMessageCity = document.getElementById('cityErrorMsg');
+
+        if (testCity) {
+            errorMessageCity.innerHTML = 'Votre ville';
+        } else {
+            errorMessageCity.innerHTML = 'Ville invalide!';
+        }
+    };
+
+    //Adresse mail
+    form.email.addEventListener('change', function () {
+        validEmail(this);
+    });
+    const validEmail = function (email) {
+        let testEmail = emailRegex.test(email.value);
+        let errorMessageEmail = document.getElementById('emailErrorMsg');
+
+        if (testEmail) {
+            errorMessageEmail.innerHTML = 'Votre adresse email';
+        } else {
+            errorMessageEmail.innerHTML = 'Adresse email invalide!';
+        }
+    }
+};
+
+getForm();
+
+// Bouton COMMANDER
+const order = document.getElementById('order');
+
+async function submitOrder() {
+
+    //Objet pour les infos du formulaire
+    const infoContact = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        email: document.getElementById('email').value,
+    };
+
+    //Création d'un array pour les éléments du local storage
+    let produitsACommander = [];
+    for (let i = 0; i < panier.length; i++) {
+        produitsACommander.push(panier[i].id);
+    };
+
+    //Mise en place d'un objet pour les avoir les infos contact + les produits
+    const infoOrderRecap = {
+        products: produitsACommander,
+        contact: infoContact,
+    };
+    console.log(infoOrderRecap)
+    let response = await fetch(url + "order", {
+
+        // Ajout de la méthode
+        method: "POST",
+
+        // Ajout du body à envoyer
+        body: JSON.stringify(infoOrderRecap),
+
+        // Ajout de titre à la requête
+        headers: { "Content-type": "application/json; charset=UTF-8" }
+    })
+    let dataFromBackEnd = await response.json();
+    console.log(dataFromBackEnd);
+    orderId = dataFromBackEnd.orderId;
+    console.log(orderId);
+    localStorage.setItem('orderId', dataFromBackEnd.orderId);
+    document.location.href = 'confirmation.html?id=' + dataFromBackEnd.orderId;
+}
+
+order.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    submitOrder();
+    //AU CLIC ENVOI SUR LA PAGE CONFIRMATION AVEC L'ORDERID 
+    window.location.href = 'confirmation.html?orderId=' + orderId;
+
+});
+
+
+
