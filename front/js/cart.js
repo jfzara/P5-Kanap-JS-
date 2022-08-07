@@ -108,7 +108,7 @@ function displayLocalStorage() {
                 contentSettingsQuantity.appendChild(quantityInput);
 
 
-                quantityInput.addEventListener('click', modifyQuantity);//"change" fonctionne aussi
+                quantityInput.addEventListener('change', modifyQuantity);
                 function modifyQuantity(e) {
                     console.log(e);
                     let valueNewQuantity = (e.path[0].value);//propriétés de l'event
@@ -145,7 +145,7 @@ function displayLocalStorage() {
                     let produitASplicer = panier.find(
                         (element) => element.id === idDuProduitASupprimer && element.color === couleurDuProduitASupprimer);
                     //retirer le produit trouvé du tableau
-                    panier.splice((produitASplicer[i] - 1), 1); //
+                    panier.splice(produitASplicer[i] - 1, 1); //
 
                     localStorage.setItem("panier_localStorage", JSON.stringify(panier));
 
@@ -195,18 +195,78 @@ async function totalPrice() {
 totalPrice();
 
 
-//Fonction getForm = 
+//Regex pour tester email, prénom-nom-ville et adresse
+
+let emailRegex = new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9.-]+[.]{1}[a-z]{2,4}$');
+let generalRegex = new RegExp('^[a-zA-Z. àäéèêëîìïôòöûüùç_-]+$');
+let adressRegex = new RegExp('^[0-9a-zA-Z.-_ àäéèêëîìïôòöûüùç]+$')
+
+const validFirstName = function (firstName) {
+    let testFirstName = generalRegex.test(firstName.value);
+    let errorMessageFirstName = document.getElementById('firstNameErrorMsg');
+
+    if (testFirstName) {
+        errorMessageFirstName.innerHTML = '';
+        return true;
+    } else {
+        errorMessageFirstName.innerHTML = 'Prénom invalide!';
+        return false;
+    }
+};
+const validLastName = function (lastName) {
+    let testLastName = generalRegex.test(lastName.value);
+    let errorMessageLastName = document.getElementById('lastNameErrorMsg');
+
+    if (testLastName) {
+        errorMessageLastName.innerHTML = '';
+        return true;
+    } else {
+        errorMessageLastName.innerHTML = 'Nom invalide!';
+        return false;
+    }
+};
+const validAdress = function (address) {
+    let testAdress = adressRegex.test(address.value);
+    let errorMessageAdress = document.getElementById('addressErrorMsg');
+
+    if (testAdress) {
+        errorMessageAdress.innerHTML = '';
+        return true;
+    } else {
+        errorMessageAdress.innerHTML = 'Adresse invalide!';
+        return false;
+    }
+};
+const validCity = function (city) {
+    let testCity = generalRegex.test(city.value);
+    let errorMessageCity = document.getElementById('cityErrorMsg');
+
+    if (testCity) {
+        errorMessageCity.innerHTML = '';
+        return true;
+    } else {
+        errorMessageCity.innerHTML = 'Ville invalide!';
+        return false;
+    }
+};
+const validEmail = function (email) {
+    let testEmail = emailRegex.test(email.value);
+    let errorMessageEmail = document.getElementById('emailErrorMsg');
+
+    if (testEmail) {
+        errorMessageEmail.innerHTML = '';
+        return true;
+    } else {
+        errorMessageEmail.innerHTML = 'Adresse email invalide!';
+        return false;
+    }
+}
+
 function getForm() {
 
 
     // Variable désignant le formulaire
     let form = document.querySelector(".cart__order__form");
-
-    //Regex pour tester email, prénom-nom-ville et adresse
-
-    let emailRegex = new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9.-]+[.]{1}[a-z]{2,4}$');
-    let generalRegex = new RegExp('^[a-zA-Z. àäéèêëîìïôòöûüùç_-]+$');
-    let adressRegex = new RegExp('^[0-9]{0,5} [a-zA-Z.-_ àäéèêëîìïôòöûüùç]+$')
 
     //Vérification des éléments sur le formulaire
 
@@ -214,76 +274,30 @@ function getForm() {
     form.firstName.addEventListener('change', function () {
         validFirstName(this);
     });
-    const validFirstName = function (firstName) {
-        let testFirstName = generalRegex.test(firstName.value);
-        let errorMessageFirstName = document.getElementById('firstNameErrorMsg');
-
-        if (testFirstName) {
-            errorMessageFirstName.innerHTML = 'Votre prénom ';
-        } else {
-            errorMessageFirstName.innerHTML = 'Prénom invalide!';
-        }
-    };
 
     //Nom
     form.lastName.addEventListener('change', function () {
         validLastName(this);
     });
-    const validLastName = function (lastName) {
-        let testLastName = generalRegex.test(lastName.value);
-        let errorMessageLastName = document.getElementById('lastNameErrorMsg');
 
-        if (testLastName) {
-            errorMessageLastName.innerHTML = 'Votre nom';
-        } else {
-            errorMessageLastName.innerHTML = 'Nom invalide!';
-        }
-    };
 
     //Adresse
     form.address.addEventListener('change', function () {
         validAdress(this);
     });
-    const validAdress = function (address) {
-        let testAdress = adressRegex.test(address.value);
-        let errorMessageAdress = document.getElementById('addressErrorMsg');
 
-        if (testAdress) {
-            errorMessageAdress.innerHTML = 'Votre adresse';
-        } else {
-            errorMessageAdress.innerHTML = 'Adresse invalide!';
-        }
-    };
 
     //Ville
     form.city.addEventListener('change', function () {
         validCity(this);
     });
-    const validCity = function (city) {
-        let testCity = generalRegex.test(city.value);
-        let errorMessageCity = document.getElementById('cityErrorMsg');
 
-        if (testCity) {
-            errorMessageCity.innerHTML = 'Votre ville';
-        } else {
-            errorMessageCity.innerHTML = 'Ville invalide!';
-        }
-    };
 
     //Adresse mail
     form.email.addEventListener('change', function () {
         validEmail(this);
     });
-    const validEmail = function (email) {
-        let testEmail = emailRegex.test(email.value);
-        let errorMessageEmail = document.getElementById('emailErrorMsg');
 
-        if (testEmail) {
-            errorMessageEmail.innerHTML = 'Votre adresse email';
-        } else {
-            errorMessageEmail.innerHTML = 'Adresse email invalide!';
-        }
-    }
 };
 
 getForm();
@@ -329,18 +343,27 @@ async function submitOrder() {
     console.log(dataFromBackEnd);
     orderId = dataFromBackEnd.orderId;
     console.log(orderId);
-    localStorage.setItem('orderId', dataFromBackEnd.orderId);
+
     document.location.href = 'confirmation.html?id=' + dataFromBackEnd.orderId;
 }
 
 order.addEventListener('click', function (event) {
     event.preventDefault();
-
-    submitOrder();
-    //AU CLIC ENVOI SUR LA PAGE CONFIRMATION AVEC L'ORDERID 
-    window.location.href = 'confirmation.html?orderId=' + orderId;
-
-});
+    if (
+        panier.length > 0 &&
+        validFirstName(document.getElementById('firstName')) &&
+        validLastName(document.getElementById('lastName')) &&
+        validAdress(document.getElementById('address')) &&
+        validCity(document.getElementById('city')) &&
+        validEmail(document.getElementById('email'))) {
+        submitOrder();
+        //AU CLIC ENVOI SUR LA PAGE CONFIRMATION AVEC L'ORDERID 
+        window.location.href = 'confirmation.html?orderId=' + orderId;
+    }
+    else if (panier === 0) { alert("Panier vide: veuillez choisir au moins un canapé"); }
+    else { alert("Veuillez remplir correctement tous les champs"); }
+}
+);
 
 
 
