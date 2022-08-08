@@ -199,7 +199,8 @@ totalPrice();
 
 let emailRegex = new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9.-]+[.]{1}[a-z]{2,4}$');
 let generalRegex = new RegExp('^[a-zA-Z. àäéèêëîìïôòöûüùç_-]+$');
-let adressRegex = new RegExp('^[0-9a-zA-Z.-_ àäéèêëîìïôòöûüùç]+$')
+//let adressRegex = new RegExp('^[0-9a-zA-Z.-_ àäéèêëîìïôòöûüùç]+$')
+let adressRegex = new RegExp('^[0-9a-zA-Z.-_ \'àäéèêëîìïôòöûüùç]+$')
 
 const validFirstName = function (firstName) {
     let testFirstName = generalRegex.test(firstName.value);
