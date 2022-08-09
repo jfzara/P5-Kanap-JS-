@@ -1,3 +1,4 @@
+//On déclare une variable pour l'url de l'API
 const url = "http://localhost:3000/api/products/";
 
 //Extraction de l'Id de chaque produit
@@ -58,18 +59,23 @@ async function getInfoProduct() {
                 color.innerHTML = data.colors[i];
                 colorsProduct.appendChild(color);
             };
-        })
+        }
+
+        )
+        .catch((err) => console.log(err));
+    //comportement en cas d'échec de la requête
 
 
     // On appelle la fonction addToCart avec un addEventListener sur le bouton (addToCartBtn), qui réagit au clic 
     const addToCartBtn = document.querySelector("#addToCart");
     addToCartBtn.addEventListener("click", (addToCart));
-   // addToCartBtn.addEventListener("click", (removeStorage));
+
+
 }
 
 getInfoProduct();
 
-//function removeStorage (){localStorage.removeItem("panier_localStorage")};
+
 
 
 
@@ -82,14 +88,16 @@ function addToCart() {
     const numberOfProducts = document.querySelector("#quantity");
     // déclarer la variable pour la couleur de produit sélectionnée
     const selectedColor = document.querySelector("#colors");
+
+    //déclarer un objet pour désigner chaque produit sélectionné
     const selectedProduct = {
         id: productId,
         title: nameOfProduct,
         color: selectedColor.value,
         quantity: numberOfProducts.value
-    }//déclarer un objet pour désigner chaque produit sélectionné 
+    }
 
-    //`"soit une variable kanap_Car: elle désigne le contenu du panier (ds le localStorage)"
+    //`"soit une variable kanap_Cart: elle désigne le contenu du panier (ds le localStorage)"
     let kanap_Cart;
 
     // déclarer la condition 
@@ -97,34 +105,40 @@ function addToCart() {
     if (/*condition générale : si le clic ajoute une quantité de produits comprise entre 0 et 100, non nulle, 
     et que l'utilisateur a bien sélectionné une couleur*/
         numberOfProducts.value > 0 && numberOfProducts.value <= 100 && numberOfProducts.value != 0 && selectedColor.value != ""
-    ) {   //"cas 1 : si le localStorage contient déja quelque chose"
+    ) {
+        //"si le localStorage contient déja quelque chose"
 
         if (JSON.parse(localStorage.getItem("panier_localStorage") != null)) {
-            console.log("produit(s) supplémentaire(s) ajouté(s)!");
-            //"alors on déclare une variable désignant le contenu du panier ds le localStorage"
 
+            //"alors on déclare une variable désignant le contenu du panier ds le localStorage"
             let panier = JSON.parse(localStorage.getItem("panier_localStorage"));
 
+            /*créer une variable booléenne pour la manipuler dans la fonction pour rechercher 
+            si oui ou non un produit identique existe déja dans le panier*/
             let exist = false;
 
+            //pour chaque élément/produit du panier
             panier.forEach((element) => {
+                //si le produit sélectionné (Id+couleur) existe déja dans le panier, incrémenter sa quqntité
                 if (element.title === nameOfProduct && element.color === selectedColor.value) {
-                    console.log("presence de produit identique");
+                    console.log("présence de produit identique");
                     element.quantity = parseInt(numberOfProducts.value) + parseInt(element.quantity);
                     exist = true;
                 }
             });
-
+            //sinon, ajouter le produit sélectionné au panier
             if (exist == false) {
                 panier.push(selectedProduct);
                 alert("Ajouté au panier aussi!");
-            localStorage.setItem("panier_localStorage", JSON.stringify(panier));
+                localStorage.setItem("panier_localStorage", JSON.stringify(panier));
             };
-            
+
         }
         else {
-            //"cas 2: sinon la variable kanap_Cart désignera un tableau vide destiné à recevoir le premier ajout de produit(s)"
-           
+
+            /* si le panier est vide, la variable kanap_Cart désignera un tableau 
+            vide destiné à recevoir le premier ajout de produit(s)*/
+
             kanap_Cart = [];
             kanap_Cart.push(selectedProduct);
             let panier = JSON.stringify(kanap_Cart);

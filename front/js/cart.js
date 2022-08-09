@@ -1,9 +1,11 @@
+
+//On déclare une variable pour l'url de l'API
 const url = "http://localhost:3000/api/products/";
 
-
+//On déclare une variable pour le panier contenu dans le Local Storage
 let cartContent = localStorage.getItem("panier_localStorage");
 
-//Vérification du localstorage
+//Vérifier si le Local Storage est vide ou pas
 let panier;
 if (localStorage.getItem("panier_localStorage") != null) {
     console.log(cartContent);
@@ -14,10 +16,10 @@ if (localStorage.getItem("panier_localStorage") != null) {
     alert("Votre panier est vide!");
 };
 
-//Récupération du local storage
-displayLocalStorage();
+//Afficher le contenu du panier avec une boucle "for" qui parcourt chaque produit
+displayCart();
 
-function displayLocalStorage() {
+function displayCart() {
     for (let i = 0; i < panier.length; i++) {
         fetch(url + panier[i].id)
             .then((resp) => resp.json())
@@ -36,7 +38,7 @@ function displayLocalStorage() {
                 let articleCart = document.createElement("article");
                 articleCart.style.border = "2px solid black";
                 articleCart.className = "cart__item";
-                //On crée les attributs "data-id" et "data-color" avec les éléments du localstorage
+                //On crée les attributs "data-id" et "data-color" avec les éléments du LocalStorage
                 articleCart.setAttribute('data-id', panier[i].id);
                 articleCart.setAttribute('data-color', panier[i].color);
                 sectionContainerCart.appendChild(articleCart);
@@ -111,12 +113,16 @@ function displayLocalStorage() {
                 quantityInput.addEventListener('change', modifyQuantity);
                 function modifyQuantity(e) {
                     console.log(e);
-                    let valueNewQuantity = (e.path[0].value);//propriétés de l'event
+                    let valueNewQuantity = (e.path[0].value);//propriétés de l'event dans l'inspecteur
+
+                    /*si la valeur du "path" de l'event est différente de la quantité initiale (=change)
+                    et est comprise entre 0 et 100
+                    alors on assigne cette valeur du "path" à la nouvelle quantité*/
                     if (valueNewQuantity != panier[i].quantity && valueNewQuantity <= 100 && valueNewQuantity > 0) {
                         panier[i].quantity = valueNewQuantity;
                         localStorage.setItem("panier_localStorage", JSON.stringify(panier));
-                        totalQuantity();
-                        totalPrice();
+                        totalQuantity();//On appelle la fonction pour calculer le nombre total de produits
+                        totalPrice();//On appelle la fonction pour calculer le prix total
                     } else {
                         alert(`Vous ne pouvez commander qu'un nombre d'articles compris entre 1 et 100`);
                         quantityInput.value == 100;
@@ -141,24 +147,33 @@ function displayLocalStorage() {
                     console.log(panier);
                     let idDuProduitASupprimer = panier[i].id;
                     let couleurDuProduitASupprimer = panier[i].color;
-                    //rechercher le produit selectionné dans le LS
+                    //rechercher le produit selectionné dans le LocalStorage
                     let produitASplicer = panier.find(
                         (element) => element.id === idDuProduitASupprimer && element.color === couleurDuProduitASupprimer);
-                    //retirer le produit trouvé du tableau
+
+                    /*retirer le produit trouvé du tableau 
+                    (on splice un produit (1) à partir du produit précédant 
+                    le produit à splicer (produitASplicer[i] - 1) )*/
                     panier.splice(produitASplicer[i] - 1, 1); //
 
+                    //on renvoie le nouveau panier dans le Local Storage
                     localStorage.setItem("panier_localStorage", JSON.stringify(panier));
 
-
+                    //si le panier est vide , on vide le Local Storage
                     if (panier.length === 0) {
                         localStorage.clear();
                     }
+
+                    //on recharge la page et on affiche ainsi le nouveau panier
                     window.location.reload();
                 }
 
-                totalQuantity();
+                totalQuantity();//On appelle la fonction pour calculer le nombre total de produits
 
-            });
+            })
+            .catch((err) => console.log(err));
+        //comportement en cas d'échec de la requête
+
     };
 
 };
@@ -166,19 +181,21 @@ function displayLocalStorage() {
 //Fonction pour avoir le nombre total de produits
 function totalQuantity() {
     let quantityItem = document.getElementsByClassName('itemQuantity');
+    //On déclare  une variable (= 0) pour la manipuler dans le calcul 
     let number = 0;
-    //console.log(quantityItem);
-    for (i = 0; i < quantityItem.length; i++) {
-        number += parseInt(quantityItem[i].value);
+
+    for (j = 0; j < quantityItem.length; j++) {
+        number += parseInt(quantityItem[j].value);
     }
     totalNumber = document.getElementById('totalQuantity');
     totalNumber.innerHTML = number;
 };
 
 
-// Fonction pour avoir le prix total 
+// Fonction pour avoir le prix total (en async car elle est incluse dans la fonction displayCart())
 async function totalPrice() {
     let itemQuantity = document.getElementsByClassName('itemQuantity');
+    //On déclare  une variable (= 0) pour la manipuler dans le calcul 
     let total = 0;
 
     for (e = 0; e < panier.length; e++) {
@@ -187,7 +204,7 @@ async function totalPrice() {
             .then(function (data) {
                 return data.price
             })
-        total += itemPrice * parseInt(itemQuantity[e].value);
+        total += itemPrice * parseInt(itemQuantity[e].value);//Multiplication pour trouver le prix total
     };
     totalPriceProduct = document.getElementById('totalPrice');
     totalPriceProduct.innerHTML = total;
@@ -199,8 +216,10 @@ totalPrice();
 
 let emailRegex = new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9.-]+[.]{1}[a-z]{2,4}$');
 let generalRegex = new RegExp('^[a-zA-Z. àäéèêëîìïôòöûüùç_-]+$');
-//let adressRegex = new RegExp('^[0-9a-zA-Z.-_ àäéèêëîìïôòöûüùç]+$')
 let adressRegex = new RegExp('^[0-9a-zA-Z.-_ \'àäéèêëîìïôòöûüùç]+$')
+
+/*On crée une fonction pour tester chaque champ du formulaire:
+firstName, lastName, address, city, email*/
 
 const validFirstName = function (firstName) {
     let testFirstName = generalRegex.test(firstName.value);
@@ -263,6 +282,9 @@ const validEmail = function (email) {
     }
 }
 
+
+
+//Fonction pour écouter les données saisies dans le formulaire par l'utilisateur
 function getForm() {
 
 
@@ -306,6 +328,8 @@ getForm();
 // Bouton COMMANDER
 const order = document.getElementById('order');
 
+
+//Fonction pour commander(async car elle est attend une promesse du back end) 
 async function submitOrder() {
 
     //Objet pour les infos du formulaire
@@ -317,10 +341,10 @@ async function submitOrder() {
         email: document.getElementById('email').value,
     };
 
-    //Création d'un array pour les éléments du local storage
+    //Création d'un array pour les produits sélectionnés 
     let produitsACommander = [];
-    for (let i = 0; i < panier.length; i++) {
-        produitsACommander.push(panier[i].id);
+    for (let k = 0; k < panier.length; k++) {
+        produitsACommander.push(panier[k].id);
     };
 
     //Mise en place d'un objet pour les avoir les infos contact + les produits
@@ -328,7 +352,8 @@ async function submitOrder() {
         products: produitsACommander,
         contact: infoContact,
     };
-    console.log(infoOrderRecap)
+
+    //on déclare la variable (response) pour désigner la promesse renvoyée par l'API apres la requête POST vers l'API 
     let response = await fetch(url + "order", {
 
         // Ajout de la méthode
@@ -342,14 +367,16 @@ async function submitOrder() {
     })
     let dataFromBackEnd = await response.json();
     console.log(dataFromBackEnd);
-    orderId = dataFromBackEnd.orderId;
+    orderId = dataFromBackEnd.orderId;//on récupere l'orderId
     console.log(orderId);
 
-    document.location.href = 'confirmation.html?id=' + dataFromBackEnd.orderId;
+    document.location.href = 'confirmation.html?id=' + dataFromBackEnd.orderId;//on redirige vers la page Confirmation avec l'orderId dans l'Url
 }
 
+//on crée un addEventListener sur le bouton Commander
 order.addEventListener('click', function (event) {
     event.preventDefault();
+    //si le panier contient des produits et que le formulaire est validé
     if (
         panier.length > 0 &&
         validFirstName(document.getElementById('firstName')) &&
@@ -358,10 +385,12 @@ order.addEventListener('click', function (event) {
         validCity(document.getElementById('city')) &&
         validEmail(document.getElementById('email'))) {
         submitOrder();
-        //AU CLIC ENVOI SUR LA PAGE CONFIRMATION AVEC L'ORDERID 
+        //le clic redirige vers la page Confirmation
         window.location.href = 'confirmation.html?orderId=' + orderId;
     }
+    //si le panier est vide
     else if (panier === 0) { alert("Panier vide: veuillez choisir au moins un canapé"); }
+    //si le formulaire n'est pas valide
     else { alert("Veuillez remplir correctement tous les champs"); }
 }
 );
